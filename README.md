@@ -1,9 +1,8 @@
-# Frontiers in Neurophotonics Summer School
+# Frontiers in Neurophotonics Summer School - June 2026 - 
 ![Neurophotonics](neurophotonics.png)
 # DeepLabCut GUI — Simple Install Guide
-![Poster](poster.png)
+![Poster](Poster.png)
 This is a clean student-friendly setup for **DeepLabCut with GUI**
-
 
 Tested target versions:
 
