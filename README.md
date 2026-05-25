@@ -1,6 +1,9 @@
-# DeepLabCut GUI — Simple Install Guide
+# Frontiers in Neurophotonics Summer School
 
+# DeepLabCut GUI — Simple Install Guide
+![Poster](poster.png)
 This is a clean student-friendly setup for **DeepLabCut with GUI**
+![Neurophotonics](neurophotonics.png)
 
 Tested target versions:
 
