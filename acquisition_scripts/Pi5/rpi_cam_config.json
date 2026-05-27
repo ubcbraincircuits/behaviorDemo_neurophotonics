@@ -1,0 +1,23 @@
+{
+
+  "sensor_mode_index": 0,
+  "width": 1456,
+  "height": 1088,
+  "fps": 40.0,
+  "shutter_us": 3000,
+  "analogue_gain": 4.0,
+  "awb_enable": true,
+  "awb_red_gain": 1.8,
+  "awb_blue_gain": 1.5,
+  "overlay_timestamp": false,
+  "output_folder": "/media/pi/Seagate Expansion Drive/PA",
+  "file_prefix": "cam1",
+  "duration": "",
+  "pins": {
+    "record": "None",
+    "frame": "None",
+    "dark": "None",
+    "pulse_ms": 2.0,
+    "dark_n": 0
+  }
+}
