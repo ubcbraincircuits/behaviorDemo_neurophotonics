@@ -1,0 +1,20 @@
+name: pymouse_infer
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - ipykernel
+  - jupyterlab
+  - pip:
+      # Install PyTorch separately after creating the environment because
+      # the correct wheel depends on the computer's GPU / CUDA support.
+      - numpy
+      - opencv-python
+      - matplotlib
+      - tqdm
+      - joblib
+      - scikit-learn
+      - open3d
+      - ultralytics
