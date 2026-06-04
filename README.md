@@ -210,3 +210,316 @@ pip install --pre "deeplabcut[gui]==3.0.0rc6"
 pip install matplotlib==3.8.4 numpy==1.26.4 napari==0.4.18 napari-deeplabcut==0.2.1.6
 python -m deeplabcut
 ```
+
+# PyMouse Lifter offline demo setup
+
+This guide describes how to set up the PyMouse Lifter offline inference workflow, place the required model files, run inference on extracted video frames, and visualize the results.
+
+The recommended workflow is:
+
+1. Clone the repository.
+2. Fix the `tourchhub` folder typo if the repository still contains it.
+3. Create the `pymouse_infer` conda environment from the YAML file.
+4. Install the PyTorch build that matches the computer's GPU/CUDA support.
+5. Download the required model files and place them in the expected folders.
+6. Convert the video to frames.
+7. Run `run_PyMouseLifter_offline_demo.py` on the frame folder.
+8. Open `VisualizeOfflineDemo.ipynb` to inspect the output.
+
+---
+
+## 1. Clone the repository
+
+```bash
+git clone https://github.com/Haozong-Zeng/PyMouse-Lifter.git
+cd PyMouse-Lifter
+```
+
+If the repository contains a misspelled folder named `tourchhub`, rename it to `torchhub`:
+
+```bash
+# Windows Command Prompt
+ren tourchhub torchhub
+
+# macOS/Linux/Git Bash
+mv tourchhub torchhub
+```
+
+---
+
+## 2. Expected folder structure
+
+After downloading the model files, the repository should look like this:
+
+```text
+PyMouse-Lifter/
+├── Depth-Anything/
+│   ├── run_PyMouseLifter_offline_demo.py
+│   ├── VisualizeOfflineDemo.ipynb
+│   ├── metric_depth/
+│   │   └── checkpoints/
+│   │       └── depth_anything_metric_PyMouse_HQ_orbbec_trans_synthetic.pt
+│   └── other_models/
+│       ├── yolo11m-orbbec-pose-real.pt
+│       └── rf_model_realtime_demo.pkl
+├── frames1/
+│   ├── frame_000001.png
+│   ├── frame_000002.png
+│   └── ...
+└── pymouse_infer.yml
+```
+
+The default offline script assumes it is run from inside `PyMouse-Lifter/Depth-Anything/`.
+
+---
+
+## 3. Create the conda environment
+
+Use the cleaned `pymouse_infer.yml` file in this repository. Do not include a machine-specific `prefix:` line in a shared YAML file.
+
+```bash
+conda env create -f pymouse_infer.yml
+conda activate pymouse_infer
+```
+
+Important: use `conda env create -f pymouse_infer.yml`, not `conda create env -f pymouse_infer.yml`.
+
+---
+
+## 4. Install PyTorch separately
+
+PyTorch is installed separately because the correct wheel depends on the computer's GPU, driver, operating system, and desired CUDA runtime.
+
+### Option A: known tested setup on this machine
+
+This was tested with PyTorch 2.5.1 and CUDA 12.1:
+
+```bash
+python -m pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu121
+```
+
+Expected check:
+
+```bash
+python -c "import torch; print(torch.__version__); print(torch.version.cuda); print(torch.cuda.is_available()); print(torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'CPU only')"
+```
+
+Expected output on a working CUDA 12.1 GPU install is similar to:
+
+```text
+2.5.1+cu121
+12.1
+True
+<your GPU name>
+```
+
+### Option B: different GPU / different CUDA build
+
+Use the official PyTorch install selector or previous-version page to choose the correct command for that computer.
+
+For PyTorch 2.5.1, common pip options are:
+
+```bash
+# CUDA 11.8
+python -m pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu118
+
+# CUDA 12.1
+python -m pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu121
+
+# CUDA 12.4
+python -m pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu124
+
+# CPU only
+python -m pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cpu
+```
+
+Notes:
+
+- `torch.version.cuda` reports the CUDA runtime used by the installed PyTorch wheel.
+- `torch.cuda.is_available()` must be `True` if you want GPU inference.
+- If it is `False`, check the NVIDIA driver with `nvidia-smi`, then reinstall the correct PyTorch wheel.
+- The full CUDA Toolkit is usually not needed just to run PyTorch wheels, but a compatible NVIDIA driver is needed.
+
+---
+
+## 5. Install remaining Python packages, if needed
+
+The cleaned YAML already includes these, but if an existing environment is missing them, install with:
+
+```bash
+python -m pip install joblib scikit-learn tqdm opencv-python matplotlib open3d ultralytics
+```
+
+Use `python -m pip` instead of plain `pip` to make sure packages are installed into the currently activated Python environment.
+
+---
+
+## 6. Download and place model files
+
+Download the Depth-Anything PyMouse checkpoint from:
+
+```text
+https://ucsandiego2.app.box.com/s/vr6tagor9fqahjh91xu1qs6h5ujqm39b
+```
+
+Place this file here:
+
+```text
+PyMouse-Lifter/Depth-Anything/metric_depth/checkpoints/depth_anything_metric_PyMouse_HQ_orbbec_trans_synthetic.pt
+```
+
+Download the YOLO pose model and random-forest classifier from:
+
+```text
+https://ucsandiego2.app.box.com/s/2cvosqdjs7zybwqsja9exjq2itfbmer1
+https://ucsandiego2.app.box.com/s/ij1fux4wvi9q014b016r1yj8fahtkdfe
+```
+
+Place them here:
+
+```text
+PyMouse-Lifter/Depth-Anything/other_models/yolo11m-orbbec-pose-real.pt
+PyMouse-Lifter/Depth-Anything/other_models/rf_model_realtime_demo.pkl
+```
+
+---
+
+## 7. Convert video to frames
+
+Use your video-to-frames script to extract frames into a folder, for example:
+
+```text
+PyMouse-Lifter/frames1/
+```
+
+Make sure the frames are sorted correctly by filename, for example:
+
+```text
+frame_000001.png
+frame_000002.png
+frame_000003.png
+...
+```
+
+Avoid names like `frame_1.png`, `frame_10.png`, `frame_2.png`, because alphabetical sorting can put them in the wrong order. Use zero-padding.
+
+---
+
+## 8. Run offline inference
+
+From inside the `Depth-Anything` folder:
+
+```bash
+cd PyMouse-Lifter/Depth-Anything
+conda activate pymouse_infer
+
+python run_PyMouseLifter_offline_demo.py --img_path ../frames1 --outdir ./output_frames1 --batch_size 2 --save_depth_vis
+```
+
+On Windows Command Prompt, the same command can be written as:
+
+```cmd
+cd PyMouse-Lifter\Depth-Anything
+conda activate pymouse_infer
+
+python run_PyMouseLifter_offline_demo.py --img_path ..\frames1 --outdir .\output_frames1 --batch_size 2 --save_depth_vis
+```
+
+If you do not need the depth visualization video, omit `--save_depth_vis`:
+
+```bash
+python run_PyMouseLifter_offline_demo.py --img_path ../frames1 --outdir ./output_frames1 --batch_size 2
+```
+
+---
+
+## 9. Expected outputs
+
+The output folder should contain:
+
+```text
+output_frames1/
+├── raw_video.mp4
+├── behavior_classification.txt
+└── depth_vis.mp4      # only if --save_depth_vis was used
+```
+
+Then open:
+
+```text
+PyMouse-Lifter/Depth-Anything/VisualizeOfflineDemo.ipynb
+```
+
+and point it to the output folder, for example:
+
+```python
+output_dir = "./output_frames1"
+```
+
+---
+
+## 10. Common problems
+
+### `torch.cuda.is_available()` is `False`
+
+You likely installed a CPU-only PyTorch build, installed a CUDA build incompatible with the driver, or are using a computer without an NVIDIA GPU.
+
+Check:
+
+```bash
+nvidia-smi
+python -c "import torch; print(torch.__version__); print(torch.version.cuda); print(torch.cuda.is_available())"
+```
+
+Then reinstall PyTorch using the correct command from the official PyTorch selector.
+
+### `ModuleNotFoundError: No module named 'depth_anything'`
+
+Run the script from inside the `Depth-Anything` folder:
+
+```bash
+cd PyMouse-Lifter/Depth-Anything
+python run_PyMouseLifter_offline_demo.py --img_path ../frames1 --outdir ./output_frames1
+```
+
+### Model file not found
+
+Check that the files are exactly here:
+
+```text
+Depth-Anything/metric_depth/checkpoints/depth_anything_metric_PyMouse_HQ_orbbec_trans_synthetic.pt
+Depth-Anything/other_models/yolo11m-orbbec-pose-real.pt
+Depth-Anything/other_models/rf_model_realtime_demo.pkl
+```
+
+### Random-forest `.pkl` warning from scikit-learn
+
+If `joblib.load()` gives a scikit-learn version warning, the model may still run, but the safest option is to install the same scikit-learn version used when the classifier was trained. If predictions fail, ask the model provider which scikit-learn version was used.
+
+---
+
+## 11. Suggested `.gitignore`
+
+Do not commit large model files, extracted frames, videos, or output folders:
+
+```gitignore
+# model files
+*.pt
+*.pth
+*.pkl
+
+# extracted frames / videos / outputs
+frames*/
+output_frames*/
+demo/
+*.mp4
+*.avi
+
+# notebooks
+.ipynb_checkpoints/
+
+# Python cache
+__pycache__/
+*.pyc
+```
+
