@@ -20,9 +20,11 @@ Tested GPU stack:
 * `pytorch-cuda=12.1`
 
 Useful links:
-
-* DeepLabCut install docs: [https://deeplabcut.github.io/DeepLabCut/docs/installation.html](https://deeplabcut.github.io/DeepLabCut/docs/installation.html)
+* Miniforge (installs Python and conda): [https://kirenz.github.io/codelabs/codelabs/miniforge-setup/#0](https://kirenz.github.io/codelabs/codelabs/miniforge-setup/#0)
+* DeepLabCut Documentation and Installation: [https://deeplabcut.github.io/DeepLabCut/README.html](https://deeplabcut.github.io/DeepLabCut/README.html)
 * DeepLabCut package: [https://pypi.org/project/deeplabcut/](https://pypi.org/project/deeplabcut/)
+* Keypoint-MoSeq Dpcumentation and Installation: [https://keypoint-moseq.readthedocs.io/en/latest/](https://keypoint-moseq.readthedocs.io/en/latest/])
+* PyMouse-Lifter Documentation and Installation: [https://github.com/Haozong-Zeng/PyMouse-Lifter](https://github.com/Haozong-Zeng/PyMouse-Lifter)
 * PyTorch install page: [https://pytorch.org/get-started/locally/](https://pytorch.org/get-started/locally/)
 * PyTorch previous versions: [https://pytorch.org/get-started/previous-versions/](https://pytorch.org/get-started/previous-versions/)
 
@@ -30,15 +32,15 @@ Useful links:
 
 ## Before you start
 
-1. Install **Anaconda**.
-2. Open **Anaconda Prompt**.
+1. Install **Miniforge**.
+2. Open **Miniforge Prompt**.
 3. Do everything in a **new environment**.
 
 Do **not** install DeepLabCut in `base`.
 
 ---
 
-## Which version should you install?
+## Which version of DeepLabCut should you install?
 
 ### Use the GPU version if:
 
@@ -79,7 +81,7 @@ If you get something like this, the safest choice is usually to install the **sa
 
 ---
 
-# Recommended install: GPU version
+# Recommended DLC install: GPU version
 
 ```bash
 conda create -n DLC3 python=3.10.13 -y
@@ -103,7 +105,7 @@ python -m deeplabcut
 
 ---
 
-# Fallback install: CPU version
+# Fallback DLC install: CPU version
 
 Use this only if the GPU version does not work.
 
