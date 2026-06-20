@@ -84,10 +84,23 @@ If you get something like this, the safest choice is usually to install the **sa
 # Recommended DLC install: GPU version
 
 ```bash
-conda create -n DLC3 python=3.10.13 -y
-conda activate DLC3
-conda install pytorch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 pytorch-cuda=12.1 -c pytorch -c nvidia -y
+mamba create -n DLC3 python=3.10.13 -y
+```
+If you encounter a "shell not initialized" error, run this:
+```bash
+mamba init
+```
+And then close the terminal and reopen by typing "Miniforge" in the search bar. Then run these commands, wait for each command to finish and then run the next line:
+```bash
+mamba activate DLC3
+```
+```bash
+mamba install pytorch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 pytorch-cuda=12.1 -c pytorch -c nvidia -y
+```
+```bash
 pip install --pre "deeplabcut[gui]==3.0.0rc6"
+```
+```bash
 pip install matplotlib==3.8.4 numpy==1.26.4 napari==0.4.18 napari-deeplabcut==0.2.1.6
 ```
 
@@ -111,9 +124,22 @@ Use this only if the GPU version does not work.
 
 ```bash
 conda create -n DLC3_cpu python=3.10.13 -y
+```
+If you encounter a "shell not initialized" error, run this:
+```bash
+mamba init
+```
+And then close the terminal and reopen by typing "Miniforge" in the search bar. Then run these commands, wait for each command to finish and then run the next line:
+```bash
 conda activate DLC3_cpu
+```
+```bash
 conda install pytorch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 cpuonly -c pytorch -y
+```
+```bash
 pip install --pre "deeplabcut[gui]==3.0.0rc6"
+```
+```bash
 pip install matplotlib==3.8.4 numpy==1.26.4 napari==0.4.18 napari-deeplabcut==0.2.1.6
 ```
 
@@ -142,6 +168,7 @@ If you already have a working PyTorch environment, run:
 ```bash
 python -c "import torch; print(torch.__version__); print(torch.version.cuda); print(torch.cuda.is_available())"
 ```
+
 
 Then copy that same Torch/CUDA setup into the new DeepLabCut environment.
 
