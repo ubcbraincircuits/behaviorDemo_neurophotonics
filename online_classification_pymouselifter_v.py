@@ -619,7 +619,7 @@ if __name__ == '__main__':
     parser.add_argument('--batch_size', type=int, default=1, choices=[1, 2], help='Classification batch size (1=single frame, 2=dual frame batch processing)')
     parser.add_argument('--record_video', action='store_true', help='Record side-by-side comparison MP4 video')
     parser.add_argument('--video_output', type=str, default='realtime_recording.mp4', help='Output video filename')
-    parser.add_argument('--video_fps', type=int, default=24, help='Video FPS (default: match processing FPS)')
+    parser.add_argument('--video_fps', type=int, default=30, help='Video FPS (default: match processing FPS)')
     args = parser.parse_args()
 
     DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
