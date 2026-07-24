@@ -259,7 +259,10 @@ The recommended workflow is:
 
 ```bash
 git clone https://github.com/Haozong-Zeng/PyMouse-Lifter.git
-cd PyMouse-Lifter
+```
+
+```bash
+cd PyMouse-Lifter/Depth-Anything
 ```
 
 If the repository contains a misspelled folder named `tourchhub`, rename it to `torchhub`:
@@ -306,6 +309,9 @@ Use the cleaned `pymouse_infer.yml` file in this repository. Do not include a ma
 
 ```bash
 conda env create -f pymouse_infer.yml
+```
+
+```bash
 conda activate pymouse_infer
 ```
 
@@ -385,6 +391,7 @@ Use `python -m pip` instead of plain `pip` to make sure packages are installed i
 
 Download the Depth-Anything PyMouse checkpoint from:
 
+file: depth_anything_metric_PyMouse_HQ_orbbec_trans_synthetic.pt
 ```text
 https://ucsandiego2.app.box.com/s/vr6tagor9fqahjh91xu1qs6h5ujqm39b
 ```
@@ -392,28 +399,35 @@ https://ucsandiego2.app.box.com/s/vr6tagor9fqahjh91xu1qs6h5ujqm39b
 Place this file here:
 
 ```text
-PyMouse-Lifter/Depth-Anything/metric_depth/checkpoints/depth_anything_metric_PyMouse_HQ_orbbec_trans_synthetic.pt
+PyMouse-Lifter/Depth-Anything/metric_depth/checkpoints/
 ```
 
-Download the YOLO pose model and random-forest classifier from:
-
+Download the YOLO pose model from:
+file: yolo11m-orbbec-pose-real.pt
 ```text
 https://ucsandiego2.app.box.com/s/2cvosqdjs7zybwqsja9exjq2itfbmer1
+```
+And the random-forest classifier from:
+file: rf_model_realtime_demo.pkl
+```text
 https://ucsandiego2.app.box.com/s/ij1fux4wvi9q014b016r1yj8fahtkdfe
 ```
 
 Place them here:
 
 ```text
-PyMouse-Lifter/Depth-Anything/other_models/yolo11m-orbbec-pose-real.pt
-PyMouse-Lifter/Depth-Anything/other_models/rf_model_realtime_demo.pkl
+PyMouse-Lifter/Depth-Anything/other_models/
+```
+
+```text
+PyMouse-Lifter/Depth-Anything/other_models/
 ```
 
 ---
 
 ## 7. Convert video to frames
 
-Use your video-to-frames script to extract frames into a folder, for example:
+Use the ```text export_frames.ipynb``` notebook to extract frames into a folder, for example:
 
 ```text
 PyMouse-Lifter/frames1/
@@ -434,12 +448,15 @@ Avoid names like `frame_1.png`, `frame_10.png`, `frame_2.png`, because alphabeti
 
 ## 8. Run offline inference
 
-From inside the `Depth-Anything` folder:
+If you're not already inside the `Depth-Anything` folder:
 
 ```bash
 cd PyMouse-Lifter/Depth-Anything
+```
+```bash
 conda activate pymouse_infer
-
+```
+```bash
 python run_PyMouseLifter_offline_demo.py --img_path ../frames1 --outdir ./output_frames1 --batch_size 2 --save_depth_vis
 ```
 
@@ -447,8 +464,11 @@ On Windows Command Prompt, the same command can be written as:
 
 ```cmd
 cd PyMouse-Lifter\Depth-Anything
+```
+```cmd
 conda activate pymouse_infer
-
+```
+```cmd
 python run_PyMouseLifter_offline_demo.py --img_path ..\frames1 --outdir .\output_frames1 --batch_size 2 --save_depth_vis
 ```
 
@@ -460,7 +480,7 @@ python run_PyMouseLifter_offline_demo.py --img_path ../frames1 --outdir ./output
 
 ---
 
-## 9. Expected outputs
+## 9. Expected outputs and Visualization of the Results
 
 The output folder should contain:
 
@@ -485,7 +505,51 @@ output_dir = "./output_frames1"
 
 ---
 
-## 10. Common problems
+## 10. Online classification
+
+Download this from current repository:
+```text
+online_classification_pymouselifter_v.py
+```
+
+Place it here:
+```text
+PyMouse-Lifter/Depth-Anything/
+```
+
+Activate the environment:
+```bash
+conda activate pymouse_infer
+```
+
+Change the directory:
+```bash
+cd PyMouse-Lifter/Depth-Anything/
+```
+
+Run online classification:
+```bash
+python online_classification_pymouselifter_v.py
+```
+
+You can change the depth model encoder with:
+
+ViT-Small model:
+```bash
+python online_classification_pymouselifter_v.py --encoder vits
+```
+
+ViT-Base model:
+```bash
+python online_classification_pymouselifter_v.py --encoder vitb
+```
+
+ViT-Large model:
+```bash
+python online_classification_pymouselifter_v.py --encoder vitl
+```
+
+## 11. Common problems
 
 ### `torch.cuda.is_available()` is `False`
 
@@ -525,7 +589,7 @@ If `joblib.load()` gives a scikit-learn version warning, the model may still run
 
 ---
 
-## 11. Suggested `.gitignore`
+## 12. Suggested `.gitignore`
 
 Do not commit large model files, extracted frames, videos, or output folders:
 
