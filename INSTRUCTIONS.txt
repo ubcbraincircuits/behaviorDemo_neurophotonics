@@ -1,0 +1,3 @@
+1. first, extract the frames from your video using "export_frames.ipynb" in the current folder.
+2. second, run "run_PyMouseLifter_offline_demo_v2.py" which is in "D:\pymouse_lifter\PyMouse-Lifter\Depth-Anything"
+3. third, visualize results using "VisualizeOfflineDemo.ipynb" which is in "D:\pymouse_lifter\PyMouse-Lifter\Depth-Anything"
